@@ -12,6 +12,7 @@ A script of converting CSV files exporting from your credit and bank account
 
 import csv
 import os
+import re
 import itertools as it
 import pandas as pd
 from csv2ofx import utils
@@ -93,8 +94,8 @@ class Ofxer:
         def __to_num(df):
             if df.dtype == 'object':
                 not_num_or_dot = r'([^\d\.])'
-                df = df.str.replace(not_num_or_dot, '').fillna(0)
-                df = df.astype(float)
+                df = df.str.replace(not_num_or_dot, '').str.strip().fillna(0)
+                df = df.apply(lambda x: float(re.sub(r'[^\d\.]', '', str(x))))
             return df
 
         if self.is_bank:
